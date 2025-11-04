@@ -60,6 +60,12 @@
     <select id="color-superior"></select>
     <h3>Color Insertos</h3>
     <select id="color-insert"></select>
+    <button id="enviarWhatsApp" style="
+      width:100%;padding:10px 0;margin-top:10px;
+      background:#25D366;color:#fff;border:none;
+      border-radius:8px;font-weight:600;cursor:pointer;">
+      Enviar Personalización a WhatsApp
+    </button>
   </div>
 
   <script type="module">
@@ -181,7 +187,18 @@ crearSelect('color-insert','insert','#ff8000');    // naranjado
       camera.updateProjectionMatrix();
       renderer.setSize(innerWidth,innerHeight);
     });
+    document.getElementById('enviarWhatsApp').addEventListener('click',()=>{
+  const base = document.getElementById('color-base').selectedOptions[0].textContent;
+  const sup = document.getElementById('color-superior').selectedOptions[0].textContent;
+  const ins = document.getElementById('color-insert').selectedOptions[0].textContent;
+
+  const mensaje = `Hola Kreoma3D! 👋\nQuiero mi soporte personalizado con estos colores:\n• Base: ${base}\n• Superior: ${sup}\n• Insertos: ${ins}`;
+  const url = `https://wa.me/573332395481?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+});
+
   </script>
 </body>
 </html>
+
 
