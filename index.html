@@ -2,38 +2,96 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Personalizador de Producto</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Kreoma3D | Personalizador</title>
+  <link rel="icon" href="logo_kreoma.png">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
+    body{
+      background:#111 url('logo_kreoma.png') center center no-repeat fixed;
+      background-size:contain;
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+    }
+    header{
+      position:absolute;top:0;width:100%;display:flex;justify-content:space-between;
+      align-items:center;padding:15px 40px;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);
+    }
+    nav a{
+      color:#fff;text-decoration:none;margin:0 12px;font-weight:500;transition:.3s;
+    }
+    nav a:hover{color:#f33;}
+    h1{font-size:2rem;margin-bottom:20px;text-shadow:0 0 10px #000;}
+    #editor{background:#222;border-radius:20px;box-shadow:0 0 25px rgba(0,0,0,.6);
+      padding:20px;margin:20px;display:flex;flex-direction:column;align-items:center;
+    }
+    #lienzo{border:1px solid #555;border-radius:10px;}
+    .controles{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+    .controles input,.controles button{
+      background:#333;border:none;color:#fff;padding:10px 15px;border-radius:8px;
+    }
+    .controles button{cursor:pointer;background:#f33;}
+    .controles button:hover{background:#f55;}
+  </style>
 </head>
 <body>
-  <h1>Personaliza tu producto</h1>
-  <div id="producto">
-    <img id="imagen" src="producto_base.png" alt="Producto">
-  </div>
-  <input type="color" id="colorPicker" value="#ff0000">
-  <button id="aplicarColor">Aplicar color</button>
-  <script src="script.js"></script>
-</body>
-</html><!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Personalizador 2D</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>Personaliza tu producto</h1>
+  <header>
+    <h2>Kreoma3D</h2>
+    <nav>
+      <a href="productos/soportes/visor.html">Soportes</a>
+      <a href="productos/cascos/index.html">Cascos</a>
+      <a href="productos/accesorios/index.html">Accesorios</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+  </header>
 
-  <div id="editor">
-    <canvas id="lienzo" width="400" height="400"></canvas>
-  </div>
+  <main>
+    <h1>Personaliza tu producto</h1>
+    <div id="editor">
+      <canvas id="lienzo" width="400" height="400"></canvas>
+      <div class="controles">
+        <label>Color: <input type="color" id="colorPicker" value="#ff0000"></label>
+        <label>Texto: <input type="text" id="texto" placeholder="Tu nombre"></label>
+        <button id="guardar">Guardar imagen</button>
+      </div>
+    </div>
+  </main>
 
-  <div class="controles">
-    <label>Color: <input type="color" id="colorPicker" value="#ff0000"></label>
-    <label>Texto: <input type="text" id="texto" placeholder="Tu nombre"></label>
-    <button id="guardar">Guardar imagen</button>
-  </div>
+  <script>
+    const lienzo=document.getElementById('lienzo');
+    const ctx=lienzo.getContext('2d');
+    const colorPicker=document.getElementById('colorPicker');
+    const texto=document.getElementById('texto');
+    const guardar=document.getElementById('guardar');
 
-  <script src="script.js"></script>
+    ctx.fillStyle=colorPicker.value;
+    ctx.fillRect(50,50,300,300);
+
+    colorPicker.addEventListener('input',()=>{
+      ctx.fillStyle=colorPicker.value;
+      ctx.fillRect(50,50,300,300);
+      ctx.fillStyle='#fff';
+      ctx.font='20px Poppins';
+      ctx.fillText(texto.value,150,220);
+    });
+
+    texto.addEventListener('input',()=>{
+      ctx.fillStyle=colorPicker.value;
+      ctx.fillRect(50,50,300,300);
+      ctx.fillStyle='#fff';
+      ctx.font='20px Poppins';
+      ctx.fillText(texto.value,150,220);
+    });
+
+    guardar.addEventListener('click',()=>{
+      const link=document.createElement('a');
+      link.download='personalizacion.png';
+      link.href=lienzo.toDataURL();
+      link.click();
+    });
+  </script>
 </body>
 </html>
