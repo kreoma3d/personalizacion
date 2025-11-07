@@ -121,7 +121,7 @@
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 10000);
-    camera.position.set(-600,-400,400);
+    camera.position.set(-200,0,200);
 
     const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
     renderer.setClearColor(0x000000, 0);
@@ -141,7 +141,7 @@
     controls.dampingFactor = 0.07;
 
     const worldGroup = new THREE.Group();
-    worldGroup.position.y = -260;
+    worldGroup.position.y = -160;
     worldGroup.position.x = 320;
     scene.add(worldGroup);
 
@@ -295,3 +295,4 @@
   </script>
 </body>
 </html>
+
