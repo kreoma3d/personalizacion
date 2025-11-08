@@ -59,7 +59,7 @@ function cambiarSlide() {
 
 if (slides.length > 0) {
   
-  setInterval(cambiarSlide, 8000);
+  setInterval(cambiarSlide, 5000);
 
 
   puntos.forEach((p, i) => p.addEventListener("click", () => {
