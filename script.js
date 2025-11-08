@@ -58,7 +58,10 @@ function cambiarSlide() {
 }
 
 if (slides.length > 0) {
-  setInterval(cambiarSlide, 4000);
+  
+  setInterval(cambiarSlide, 8000);
+
+
   puntos.forEach((p, i) => p.addEventListener("click", () => {
     index = i;
     document.querySelector(".slider-container").style.transform = `translateX(-${i * 100}%)`;
