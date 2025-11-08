@@ -5,13 +5,11 @@
   <title>Kreoma3D | Impresión y Personalización 3D</title>
   <link rel="icon" href="logo_kreoma.png">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;scroll-behavior:smooth;}
     body{
       background:#0a0a0a url('logo_kreoma.png') center center no-repeat fixed;
       background-size:40%;
       color:#fff;
-      height:100vh;
-      overflow:hidden;
     }
     header{
       position:fixed;top:0;width:100%;
@@ -25,75 +23,134 @@
       color:#fff;text-decoration:none;margin:0 15px;font-weight:500;transition:.3s;
     }
     nav a:hover{color:#f33;}
-    main{
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      height:100vh;text-align:center;padding:0 20px;
-      position:relative;z-index:2;
+    section{
+      min-height:100vh;
+      display:flex;flex-direction:column;
+      justify-content:center;align-items:center;
+      text-align:center;padding:100px 20px;
+      position:relative;
     }
-    .titulo{font-size:3.5rem;color:#fff;margin-bottom:15px;text-shadow:0 0 15px #000;}
-    .subtitulo{font-size:1.3rem;color:#ccc;margin-bottom:30px;}
+    .titulo{font-size:3rem;margin-bottom:15px;color:#fff;text-shadow:0 0 15px #000;}
+    .subtitulo{font-size:1.2rem;color:#ccc;margin-bottom:30px;max-width:800px;}
     .boton{
-      display:inline-block;
-      background:#f33;color:#fff;text-decoration:none;
-      padding:15px 35px;
-      border-radius:40px;font-size:1rem;font-weight:600;cursor:pointer;
+      display:inline-block;background:#f33;color:#fff;
+      padding:15px 35px;border-radius:40px;
+      font-size:1rem;font-weight:600;text-decoration:none;
       box-shadow:0 0 15px rgba(255,0,0,.4);transition:.3s;
     }
     .boton:hover{background:#fff;color:#f33;box-shadow:0 0 25px rgba(255,0,0,.6);}
-    footer{
-      position:absolute;bottom:15px;width:100%;text-align:center;
-      font-size:.9rem;color:#777;
+    .productos-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:25px;width:90%;max-width:1000px;margin-top:40px;
     }
-    .bg-overlay{
-      position:absolute;inset:0;
-      background:radial-gradient(circle at center,rgba(255,255,255,0.03) 0%,rgba(0,0,0,0.9) 100%);
-      z-index:0;
-      pointer-events:none;
+    .producto{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:20px;padding:25px;
+      transition:.3s;
     }
-    .hero-anim{
-      position:absolute;width:100%;height:100%;overflow:hidden;z-index:1;
-      pointer-events:none;
+    .producto:hover{transform:translateY(-8px);box-shadow:0 0 20px rgba(255,0,0,.3);}
+    .producto img{width:100%;border-radius:15px;margin-bottom:15px;}
+    .producto h3{color:#fff;margin-bottom:8px;}
+    .producto p{color:#bbb;font-size:.9rem;}
+    form{
+      display:flex;flex-direction:column;gap:15px;width:90%;max-width:450px;
+      background:rgba(255,255,255,0.05);
+      padding:30px;border-radius:20px;
+      box-shadow:0 0 15px rgba(255,255,255,0.05);
     }
-    .circulo{
-      position:absolute;border-radius:50%;background:rgba(255,0,0,.08);
-      animation:flotar 12s infinite ease-in-out;
+    input,textarea{
+      padding:12px;border:none;border-radius:10px;
+      outline:none;font-size:1rem;
+      background:rgba(255,255,255,0.1);
+      color:#fff;resize:none;
     }
-    .circulo:nth-child(1){width:120px;height:120px;top:20%;left:15%;animation-delay:0s;}
-    .circulo:nth-child(2){width:200px;height:200px;bottom:10%;right:20%;animation-delay:3s;}
-    .circulo:nth-child(3){width:80px;height:80px;top:60%;left:40%;animation-delay:6s;}
-    @keyframes flotar{
-      0%,100%{transform:translateY(0) scale(1);}
-      50%{transform:translateY(-30px) scale(1.1);}
+    input::placeholder,textarea::placeholder{color:#bbb;}
+    button{
+      background:#f33;color:#fff;border:none;
+      padding:12px;border-radius:25px;font-weight:600;
+      cursor:pointer;transition:.3s;
     }
+    button:hover{background:#fff;color:#f33;}
+    footer{text-align:center;padding:30px 0;color:#777;font-size:.9rem;}
   </style>
 </head>
 <body>
-  <div class="bg-overlay"></div>
-  <div class="hero-anim">
-    <div class="circulo"></div>
-    <div class="circulo"></div>
-    <div class="circulo"></div>
-  </div>
-
   <header>
-    <h1>Kreoma3D</h1>
+    <h1><a href="#inicio" style="color:#f33;text-decoration:none;">Kreoma3D</a></h1>
+
     <nav>
+      <a href="#inicio">Inicio</a>
       <a href="#nosotros">Nosotros</a>
       <a href="#productos">Productos</a>
       <a href="#contacto">Contacto</a>
     </nav>
   </header>
 
-  <main>
+  <section id="inicio">
     <h2 class="titulo">Imagina. Crea. Personaliza.</h2>
     <p class="subtitulo">Diseñamos y fabricamos piezas únicas con tecnología 3D.<br>
     Personaliza soportes, accesorios y prototipos con tu estilo.</p>
-
     <a class="boton" href="productos/index.html">Ver Productos</a>
-  </main>
+  </section>
+
+  <section id="nosotros">
+    <h2 class="titulo">Sobre Nosotros</h2>
+    <p class="subtitulo">
+      En <strong>Kreoma3D</strong> transformamos ideas en objetos reales. Nos especializamos en la impresión 3D de piezas funcionales y personalizadas, creando productos para hogares, oficinas y proyectos creativos.
+Nuestro enfoque se centra en el desarrollo, fabricación y mejora continua de nuestros propios diseños, garantizando acabados de alta calidad y resultados confiables.
+También contamos con la capacidad de adaptar y ajustar modelos existentes para necesidades específicas, manteniendo un equilibrio entre creatividad, tecnología y precisión.
+    </p>
+  </section>
+
+  <section id="productos">
+    <h2 class="titulo">Nuestros Productos</h2>
+    <p class="subtitulo">En <strong>Kreoma3D</strong> desarrollamos y fabricamos piezas impresas en 3D con alto nivel de detalle y resistencia.
+Nuestra línea de productos se destaca por su diseño funcional, estética moderna y fabricación cuidadosa.
+
+Actualmente ofrecemos:
+
+Soportes y accesorios para cascos y equipos personales.
+
+Organizadores y elementos prácticos para el hogar y la oficina.
+
+Artículos decorativos y personalizados bajo pedido.
+
+Cada pieza es producida con materiales de calidad, optimizando durabilidad, acabado y precisión en cada impresión.
+      <div class="producto">
+        <img src="productos/soporte1.jpg" alt="Soporte de casco 3D">
+        <h3>Soporte de Casco Multicolor</h3>
+        <p>Diseño ergonómico y moderno, fabricado con PLA de alta calidad.</p>
+      </div>
+      <div class="producto">
+        <img src="productos/soporte2.jpg" alt="Base organizadora 3D">
+        <h3>Base Organizadora</h3>
+        <p>Ideal para mantener orden en tu escritorio o área de trabajo.</p>
+      </div>
+      <div class="producto">
+        <img src="productos/soporte3.jpg" alt="Prototipo personalizado">
+        <h3>Prototipos Personalizados</h3>
+        <p>Transforma tus ideas en modelos físicos precisos para presentación o prueba.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <h2 class="titulo">Contáctanos</h2>
+    <p class="subtitulo">Estamos en Medellín, Colombia. Escríbenos o envíanos un mensaje directo.</p>
+    <p><a class="boton" href="https://wa.me/573332395481" target="_blank">Hablar por WhatsApp</a></p>
+    <br>
+    <form action="https://formspree.io/f/mzzbgvwn" method="POST">
+      <input type="text" name="nombre" placeholder="Tu nombre" required>
+      <input type="email" name="email" placeholder="Tu correo" required>
+      <textarea name="mensaje" rows="5" placeholder="Escribe tu mensaje..." required></textarea>
+      <button type="submit">Enviar Mensaje</button>
+    </form>
+  </section>
 
   <footer>
-    © 2025 Kreoma3D · Hecho en Colombia
+    © 2025 Kreoma3D · Medellín, Colombia · kreoma3d@gmail.com
   </footer>
 </body>
 </html>

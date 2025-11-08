@@ -23,16 +23,24 @@
     pointer-events:none;
   }
 
-  .topbar{
-    position:fixed; top:0; left:0; right:0; height:56px; z-index:20;
-    display:flex; align-items:center; gap:12px; padding:0 16px;
-    background:#fff; border-bottom:1px solid var(--border); box-shadow:var(--shadow);
-  }
-  .topbar img{height:34px}
-  .topbar h1{
-    font-size:16px; font-weight:600;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
+.topbar{
+  position:fixed; top:0; left:0; right:0; height:56px; z-index:20;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px;
+  background:#fff; border-bottom:1px solid var(--border); box-shadow:var(--shadow);
+}
+.topbar img{height:34px;cursor:pointer;}
+.topbar h1{
+  font-size:16px; font-weight:600;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  margin:0 20px; flex:1; text-align:center;
+}
+.topbar nav a{
+  color:#111; text-decoration:none; margin-left:18px;
+  font-weight:500; transition:.3s;
+}
+.topbar nav a:hover{color:#f33;}
+
 
   #panel{
     position:fixed; top:72px; left:16px; z-index:10;
@@ -89,9 +97,19 @@
   <div class="bg-logo"></div>
 
   <div class="topbar">
-    <img src="logo_kreoma.png" alt="Kreoma3D" />
-    <h1>Personalizador 3D • Soporte de casco</h1>
-  </div>
+      <a href="../../index.html">
+    <img src="logo_kreoma.png" alt="Kreoma3D" style="height:50px;cursor:pointer;">
+  </a>
+
+  <h1>Personalizador 3D • Soporte de casco 3 en 1 </h1>
+
+  <nav>
+    <a href="../index.html">Inicio</a>
+    <a href="../index.html#productos">Productos</a>
+    <a href="../index.html#contacto">Contacto</a>
+  </nav>
+</div>
+ 
 
   <div id="panel">
     <h3>Color Base</h3>
