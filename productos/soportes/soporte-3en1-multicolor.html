@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Soporte 3 en 1 Multicolor | Kreoma3D</title>
   <link rel="icon" href="../../logo_kreoma.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
     body{
@@ -12,7 +13,6 @@
       overflow-x:hidden;
       position:relative;
     }
-    /* logo desvanecido */
     body::before{
       content:"";
       position:fixed;
@@ -22,7 +22,6 @@
       opacity:0.08;
       z-index:-2;
     }
-    /* luz animada */
     body::after{
       content:"";
       position:fixed;
@@ -38,9 +37,15 @@
     }
 
     header{
-      position:fixed;top:0;width:100%;
-      display:flex;justify-content:space-between;align-items:center;
-      padding:20px 60px;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);
+      position:fixed;
+      top:0;
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:18px 50px;
+      background:rgba(0,0,0,.6);
+      backdrop-filter:blur(10px);
       border-bottom:1px solid rgba(255,255,255,.1);
       z-index:10;
     }
@@ -53,16 +58,23 @@
     nav a:hover{color:#f33;}
 
     main{
-      margin-top:130px;
-      display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
-      padding:40px;gap:50px;
+      margin-top:140px;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+      gap:50px;
       animation:fadeIn 1s ease-out;
     }
     @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
 
     .img-box img{
-      width:380px;border-radius:20px;box-shadow:0 0 25px rgba(255,0,0,.25);
+      width:380px;
+      border-radius:20px;
+      box-shadow:0 0 25px rgba(255,0,0,.25);
       transition:.3s;
+      height:auto;
     }
     .img-box img:hover{transform:scale(1.03);}
     .info{max-width:480px;}
@@ -76,7 +88,6 @@
     }
     .boton:hover{background:#fff;color:#f33;box-shadow:0 0 25px rgba(255,0,0,.6);}
 
-    /* Galería */
     section.galeria{
       padding:60px 40px;
       text-align:center;
@@ -104,7 +115,6 @@
       box-shadow:0 0 25px rgba(255,0,0,.3);
     }
 
-    /* Video */
     .video-box{
       margin-top:50px;
       display:flex;justify-content:center;
@@ -120,22 +130,22 @@
       margin-top:60px;
     }
 
-    /* ---- Responsive mejorado ---- */
-    @media(max-width:1024px){
+    /* --- RESPONSIVE --- */
+    @media(max-width:768px){
       header{
         flex-direction:column;
-        padding:15px 20px;
-        gap:8px;
+        padding:20px;
+        gap:10px;
       }
       main{
         flex-direction:column;
-        margin-top:160px;
+        margin-top:180px;
         padding:25px 15px;
-        gap:30px;
+        gap:25px;
       }
       .img-box img{
         width:100%;
-        max-width:260px;
+        max-width:320px;
         height:auto;
       }
       .info{
@@ -144,12 +154,13 @@
       }
       .info h2{font-size:1.6rem;}
       .info p{font-size:.95rem;}
+      .boton{padding:12px 28px;font-size:.95rem;}
       .video-box iframe{
         width:100%;
-        height:220px;
+        height:200px;
       }
       .galeria-grid{
-        grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
         gap:15px;
       }
       footer{
@@ -188,7 +199,6 @@
     </div>
   </main>
 
-  <!-- Galería de fotos y video -->
   <section class="galeria">
     <h3>Galería del Soporte</h3>
     <div class="galeria-grid">
