@@ -1,466 +1,442 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Personalizador 3D - Kreoma3D</title>
+<meta charset="UTF-8" />
+<title>Personalizador 3D - Kreoma3D</title>
 
-  <style>
-  :root{
-    --panelH:42vh;
-    --border:#dadada;
-    --shadow:0 8px 25px rgba(0,0,0,.20);
-    --panel-bg:rgba(255,255,255,0.97);
-  }
+<style>
+:root{
+  --panelH: 38vh;
+  --fontBig: clamp(16px, 4.6vw, 22px);
+  --fontSemi: clamp(14px, 4vw, 20px);
+  --colorSize: clamp(34px, 8vw, 48px);
+  --tabPadY: clamp(10px, 2.6vw, 16px);
+  --tabPadX: clamp(18px, 4vw, 28px);
+  --shadow: 0 8px 28px rgba(0,0,0,.22);
+  --radius: clamp(16px, 3.5vw, 24px);
+  --border:#dadada;
+  --panel-bg:rgba(255,255,255,0.97);
+}
 
-  *{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;}
 
-  body{
-    width:100vw;
-    height:100vh;
-    height:100dvh; /* para móviles modernos */
-    overflow:hidden;
-    background:#e7e7e7;
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    color:#111;
-    position:relative;
-  }
+body{
+  width:100vw;
+  height:100vh;
+  height:100dvh;
+  overflow:hidden;
+  background:#e5e5e5;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:#111;
+}
 
-  /* VISOR SUPERIOR (3D) */
-  #visor{
-    position:absolute;
-    top:0; left:0; right:0;
-    height:calc(100vh - var(--panelH));
-    background:transparent;
-    overflow:hidden;
-  }
+/* VISOR 3D */
+#visor{
+  position:absolute;
+  top:0; left:0; right:0;
+  height:calc(100vh - var(--panelH));
+  background:transparent;
+  overflow:hidden;
+}
+@supports(height:100dvh){
+  #visor{ height:calc(100dvh - var(--panelH)); }
+}
 
-  @supports (height:100dvh){
-    #visor{
-      height:calc(100dvh - var(--panelH));
-    }
-  }
+#visor-logo{
+  position:absolute;
+  inset:0;
+  background:url("logo_kreoma.png") center center no-repeat;
+  background-size:70vmin;
+  opacity:.09;
+  pointer-events:none;
+  z-index:1;
+}
 
-  /* Marca de agua detrás de la pieza */
-  #visor-logo{
-    position:absolute;
-    inset:0;
-    background:url("logo_kreoma.png") center center no-repeat;
-    background-size:65vmin;
-    opacity:.08;
-    pointer-events:none;
-    z-index:1;
-    filter:blur(.5px);
-  }
+#canvas-container{
+  position:absolute;
+  inset:0;
+  z-index:5;
+}
+canvas{
+  filter:drop-shadow(0 18px 38px rgba(0,0,0,.35));
+}
 
-  #canvas-container{
-    position:absolute;
-    inset:0;
-    z-index:5;
-  }
+/* PANEL FIJO */
+#panel{
+  position:fixed;
+  bottom:0; left:0; right:0;
+  height:var(--panelH);
+  background:var(--panel-bg);
+  border-top:1px solid var(--border);
+  box-shadow:0 -6px 30px rgba(0,0,0,.28);
+  padding: clamp(12px, 3vw, 22px);
+  display:flex;
+  flex-direction:column;
+  gap: clamp(10px, 2.8vw, 18px);
+}
 
-  /* Sombra suave al modelo */
-  canvas{
-    filter:drop-shadow(0 18px 35px rgba(0,0,0,.35));
-  }
+/* TABS estilo pill */
+#tabs{
+  display:flex;
+  gap: clamp(8px, 2vw, 14px);
+}
 
-  /* PANEL INFERIOR FIJO */
-  #panel{
-    position:fixed;
-    left:0; right:0; bottom:0;
-    height:var(--panelH);
-    background:var(--panel-bg);
-    border-top:1px solid var(--border);
-    box-shadow:0 -5px 28px rgba(0,0,0,.25);
-    padding:12px 14px 14px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    font-size:clamp(12px, 2.6vw, 15px);
-  }
+.tab{
+  flex:1;
+  padding: var(--tabPadY) var(--tabPadX);
+  border-radius:999px;
+  border:1px solid #ccc;
+  background:#f6f6f6;
+  text-align:center;
+  font-size: var(--fontBig);
+  font-weight:600;
+  cursor:pointer;
+  user-select:none;
+}
+.tab.activo{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
 
-  /* TABS (Base / Superior / Insertos / Logo) estilo pill */
-  #tabs{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-  }
+/* BLOQUE COLOR */
+#bloque-colores h3{
+  font-size: var(--fontBig);
+  margin-bottom: clamp(6px,1.5vw,10px);
+}
 
-  .tab{
-    flex:1 1 auto;
-    padding:7px 10px;
-    border-radius:999px;
-    border:1px solid var(--border);
-    background:#f5f5f5;
-    text-align:center;
-    font-size:1em;
-    cursor:pointer;
-    user-select:none;
-    white-space:nowrap;
-  }
+#paleta{
+  display:flex;
+  flex-wrap:wrap;
+  gap: clamp(8px,2vw,14px);
+}
 
-  .tab.activo{
-    background:#111;
-    color:#fff;
-    border-color:#111;
-  }
+.color{
+  width: var(--colorSize);
+  height: var(--colorSize);
+  border-radius:50%;
+  border:3px solid #fff;
+  box-shadow: 0 0 7px rgba(0,0,0,.3);
+  cursor:pointer;
+}
+.color.sel{
+  outline:4px solid #000;
+}
 
-  /* Bloque de colores */
-  #bloque-colores h3{
-    font-size:1em;
-    font-weight:700;
-    letter-spacing:.4px;
-    margin-bottom:4px;
-  }
+/* SELECT LOGO */
+#logo-block{
+  display:none;
+  flex-direction:column;
+  gap: clamp(6px,1.8vw,12px);
+}
 
-  #paleta{
-    display:flex;
-    flex-wrap:wrap;
-    gap:7px;
-  }
+#logo-block label{
+  font-size: var(--fontBig);
+  font-weight:700;
+}
 
-  .color{
-    width:clamp(26px, 7vw, 34px);
-    height:clamp(26px, 7vw, 34px);
-    border-radius:50%;
-    border:2px solid #fff;
-    box-shadow:0 0 5px rgba(0,0,0,.25);
-    cursor:pointer;
-  }
+select{
+  width:100%;
+  padding: clamp(10px, 2.6vw, 16px);
+  border-radius: var(--radius);
+  border:1px solid #ccc;
+  font-size: var(--fontSemi);
+}
 
-  .color.sel{
-    outline:3px solid #000;
-  }
+/* BOTÓN WHATSAPP */
+#enviarWhatsApp{
+  margin-top:auto;
+  width:100%;
+  padding: clamp(14px,3vw,20px);
+  background:#25D366;
+  color:#fff;
+  border:none;
+  border-radius: var(--radius);
+  font-size: var(--fontBig);
+  font-weight:700;
+  cursor:pointer;
+}
+#enviarWhatsApp:hover{
+  background:#1ebe5c;
+}
 
-  /* Logo select: solo visible en tab Logo */
-  #logo-block{
-    display:none;
-    flex-direction:column;
-    gap:4px;
-  }
-
-  #logo-block label{
-    font-size:1em;
-    font-weight:700;
-    letter-spacing:.4px;
-  }
-
-  select{
-    width:100%;
-    padding:8px 10px;
-    border-radius:10px;
-    border:1px solid var(--border);
-    font-size:1em;
-  }
-
-  /* Botón WhatsApp abajo */
-  #enviarWhatsApp{
-    margin-top:auto;
-    width:100%;
-    padding:10px 12px;
-    background:#25D366;
-    color:#fff;
-    border:none;
-    border-radius:12px;
-    font-size:1em;
-    font-weight:700;
-    cursor:pointer;
-  }
-
-  #enviarWhatsApp:hover{
-    background:#1ebe5c;
-  }
-
-  /* Pequeño ajuste para pantallas muy altas (desktop) */
-  @media(min-width:900px){
-    :root{ --panelH:35vh; }
-  }
-  </style>
+</style>
 </head>
-
 <body>
 
-  <div id="visor">
-    <div id="visor-logo"></div>
-    <div id="canvas-container"></div>
+<div id="visor">
+  <div id="visor-logo"></div>
+  <div id="canvas-container"></div>
+</div>
+
+<div id="panel">
+
+  <!-- TABS -->
+  <div id="tabs">
+    <div class="tab activo" data-grupo="base">Base</div>
+    <div class="tab" data-grupo="superior">Superior</div>
+    <div class="tab" data-grupo="insert">Insertos</div>
+    <div class="tab" data-grupo="logo">Logo</div>
   </div>
 
-  <div id="panel">
-    <div id="tabs">
-      <div class="tab activo" data-grupo="base">Base</div>
-      <div class="tab" data-grupo="superior">Superior</div>
-      <div class="tab" data-grupo="insert">Insertos</div>
-      <div class="tab" data-grupo="logo">Logo</div>
-    </div>
-
-    <div id="bloque-colores">
-      <h3>Color</h3>
-      <div id="paleta"></div>
-    </div>
-
-    <div id="logo-block">
-      <label for="logo-select">Logo</label>
-      <select id="logo-select"></select>
-    </div>
-
-    <button id="enviarWhatsApp">Enviar Personalización a WhatsApp</button>
+  <!-- COLORES -->
+  <div id="bloque-colores">
+    <h3>Color</h3>
+    <div id="paleta"></div>
   </div>
 
-  <script type="module">
-  import * as THREE from "./libs/three.module.js";
-  import { STLLoader } from "./libs/STLLoader.js";
-  import { OrbitControls } from "./libs/OrbitControls.js";
+  <!-- LOGO SELECT -->
+  <div id="logo-block">
+    <label for="logo-select">Logo</label>
+    <select id="logo-select"></select>
+  </div>
 
-  /* ======== Escena y cámara ======== */
-  const canvasContainer = document.getElementById("canvas-container");
+  <button id="enviarWhatsApp">Enviar Personalización a WhatsApp</button>
+</div>
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 10000);
-  camera.position.set(-200,0,200);
+<script type="module">
+import * as THREE from "./libs/three.module.js";
+import { STLLoader } from "./libs/STLLoader.js";
+import { OrbitControls } from "./libs/OrbitControls.js";
 
-  const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-  canvasContainer.appendChild(renderer.domElement);
+/* =====================
+   ESCENA 3D
+===================== */
+const canvasContainer = document.getElementById("canvas-container");
 
-  function ajustarTamano(){
-    const w = canvasContainer.clientWidth || window.innerWidth;
-    const h = canvasContainer.clientHeight || window.innerHeight * 0.58;
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
-  ajustarTamano();
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 10000);
+camera.position.set(-200,0,200);
 
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x777777, 1.3);
-  scene.add(hemi);
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+canvasContainer.appendChild(renderer.domElement);
 
-  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
-  dir.position.set(1,1,1);
-  scene.add(dir);
+function ajustarTamano(){
+  const w = canvasContainer.clientWidth;
+  const h = canvasContainer.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+}
+ajustarTamano();
 
-  scene.add(new THREE.AmbientLight(0xffffff,0.35));
+const hemi = new THREE.HemisphereLight(0xffffff,0x777777,1.3);
+scene.add(hemi);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.06;
+const dir = new THREE.DirectionalLight(0xffffff,0.8);
+dir.position.set(1,1,1);
+scene.add(dir);
 
-  /* ======== Grupo principal ======== */
-  const world = new THREE.Group();
-  world.position.y = -160;
-  world.position.x = 170;
-  scene.add(world);
+scene.add(new THREE.AmbientLight(0xffffff,0.35));
 
-  /* ======== Piezas STL ======== */
-  const loader = new STLLoader();
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
 
-  const piezas = {
-    base:{file:"Helm-Wandhalter.stl",mesh:null},
-    superior:{file:"Helm-Halter.stl",mesh:null},
-    inserts:["Insert1.stl","Insert2.stl","Insert3.stl","Insert4.stl","Insert5.stl"],
-    insertMeshes:[],
-    logo:{mesh:null}
-  };
+/* =====================
+   GRUPO 3D
+===================== */
+const world = new THREE.Group();
+world.position.y = -160;
+world.position.x = 170;
+scene.add(world);
 
-  function cargarSTL(){
-    loader.load(piezas.base.file,g=>{
-      const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:"#000000",metalness:.4,roughness:.35}));
+/* =====================
+   CARGA STL
+===================== */
+const loader = new STLLoader();
+const piezas = {
+  base:{file:"Helm-Wandhalter.stl",mesh:null},
+  superior:{file:"Helm-Halter.stl",mesh:null},
+  inserts:["Insert1.stl","Insert2.stl","Insert3.stl","Insert4.stl","Insert5.stl"],
+  insertMeshes:[],
+  logo:{mesh:null}
+};
+
+function cargarSTL(){
+  loader.load(piezas.base.file,g=>{
+    const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:"#000"}));
+    m.rotation.x=Math.PI; m.rotation.z=Math.PI;
+    world.add(m);
+    piezas.base.mesh=m;
+  });
+
+  loader.load(piezas.superior.file,g=>{
+    const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:"#ff8000"}));
+    m.rotation.x=Math.PI; m.rotation.z=Math.PI;
+    world.add(m);
+    piezas.superior.mesh=m;
+  });
+
+  piezas.inserts.forEach(f=>{
+    loader.load(f,g=>{
+      const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:"#ff8000"}));
       m.rotation.x=Math.PI; m.rotation.z=Math.PI;
       world.add(m);
-      piezas.base.mesh=m;
+      piezas.insertMeshes.push(m);
     });
+  });
 
-    loader.load(piezas.superior.file,g=>{
-      const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:"#ff8000",metalness:.4,roughness:.35}));
-      m.rotation.x=Math.PI; m.rotation.z=Math.PI;
-      world.add(m);
-      piezas.superior.mesh=m;
-    });
+  cargarLogo("logoYamaha.stl","#ff8000");
+}
 
-    piezas.inserts.forEach(f=>{
-      loader.load(f,g=>{
-        const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:"#ff8000",metalness:.4,roughness:.35}));
-        m.rotation.x=Math.PI; m.rotation.z=Math.PI;
-        world.add(m);
-        piezas.insertMeshes.push(m);
-      });
-    });
-
-    cargarLogo("logoYamaha.stl","#ff8000");
+function cargarLogo(archivo,color){
+  if(piezas.logo.mesh){
+    world.remove(piezas.logo.mesh);
+    piezas.logo.mesh.geometry.dispose();
+    piezas.logo.mesh.material.dispose();
+    piezas.logo.mesh=null;
   }
+  if(!archivo) return;
 
-  function cargarLogo(archivo,color){
-    if(piezas.logo.mesh){
-      world.remove(piezas.logo.mesh);
-      piezas.logo.mesh.geometry.dispose();
-      piezas.logo.mesh.material.dispose();
-      piezas.logo.mesh=null;
-    }
-    if(!archivo) return;
+  loader.load(archivo,g=>{
+    const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color}));
+    m.rotation.x=Math.PI; m.rotation.z=Math.PI;
+    m.position.set(11,-15,-5);
+    world.add(m);
+    piezas.logo.mesh=m;
+  });
+}
 
-    loader.load(archivo,g=>{
-      const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color,metalness:.4,roughness:.35}));
-      m.rotation.x=Math.PI;
-      m.rotation.z=Math.PI;
-      m.position.set(11,-15,-5);
-      world.add(m);
-      piezas.logo.mesh=m;
-    });
-  }
+/* =====================
+   COLORES
+===================== */
+const colores=[
+  {n:"Amarillo",c:"#ffff00"},
+  {n:"Blanco",c:"#ffffff"},
+  {n:"Negro",c:"#000000"},
+  {n:"Azul",c:"#0000ff"},
+  {n:"Verde limón",c:"#ccff00"},
+  {n:"Rosado",c:"#ff66cc"},
+  {n:"Morado",c:"#8000ff"},
+  {n:"Café",c:"#8b4513"},
+  {n:"Rojo",c:"#ff0000"},
+  {n:"Gris",c:"#808080"},
+  {n:"Naranjado",c:"#ff8000"}
+];
 
-  /* ======== Colores y tabs ======== */
-  const colores=[
-    {n:"Amarillo",c:"#ffff00"},
-    {n:"Blanco",c:"#ffffff"},
-    {n:"Negro",c:"#000000"},
-    {n:"Azul",c:"#0000ff"},
-    {n:"Verde limón",c:"#ccff00"},
-    {n:"Rosado",c:"#ff66cc"},
-    {n:"Morado",c:"#8000ff"},
-    {n:"Café",c:"#8b4513"},
-    {n:"Rojo",c:"#ff0000"},
-    {n:"Gris",c:"#808080"},
-    {n:"Naranjado",c:"#ff8000"}
-  ];
+const paleta = document.getElementById("paleta");
+const tabs = document.querySelectorAll(".tab");
+const logoBlock = document.getElementById("logo-block");
+const logoSelect = document.getElementById("logo-select");
 
-  const paleta = document.getElementById("paleta");
-  const tabs = document.querySelectorAll(".tab");
-  const logoBlock = document.getElementById("logo-block");
-  const logoSelect = document.getElementById("logo-select");
+let grupoActivo = "base";
+const seleccion = {
+  base:{c:"#000000"},
+  superior:{c:"#ff8000"},
+  insert:{c:"#ff8000"},
+  logo:{c:"#ff8000"}
+};
 
-  let grupoActivo = "base";
+function aplicarColor(grupo,hex){
+  if(grupo==="base" && piezas.base.mesh) piezas.base.mesh.material.color.set(hex);
+  if(grupo==="superior" && piezas.superior.mesh) piezas.superior.mesh.material.color.set(hex);
+  if(grupo==="insert") piezas.insertMeshes.forEach(m=>m.material.color.set(hex));
+  if(grupo==="logo" && piezas.logo.mesh) piezas.logo.mesh.material.color.set(hex);
+}
 
-  const seleccion = {
-    base: {n:"Negro",c:"#000000"},
-    superior: {n:"Naranjado",c:"#ff8000"},
-    insert: {n:"Naranjado",c:"#ff8000"},
-    logo: {n:"Naranjado",c:"#ff8000"}
-  };
+function marcarSeleccionVisual(){
+  const hexSel = seleccion[grupoActivo].c;
+  paleta.querySelectorAll(".color").forEach(d=>{
+    if(d.dataset.hex===hexSel) d.classList.add("sel");
+    else d.classList.remove("sel");
+  });
+}
 
-  function aplicarColor(grupo,hex){
-    if(grupo==="base" && piezas.base.mesh) piezas.base.mesh.material.color.set(hex);
-    if(grupo==="superior" && piezas.superior.mesh) piezas.superior.mesh.material.color.set(hex);
-    if(grupo==="insert") piezas.insertMeshes.forEach(m=>m.material.color.set(hex));
-    if(grupo==="logo" && piezas.logo.mesh) piezas.logo.mesh.material.color.set(hex);
-  }
-
-  function marcarSeleccionVisual(){
-    const hexSel = seleccion[grupoActivo].c;
-    paleta.querySelectorAll(".color").forEach(div=>{
-      if(div.dataset.hex === hexSel) div.classList.add("sel");
-      else div.classList.remove("sel");
-    });
-  }
-
-  function crearPaleta(){
-    colores.forEach(col=>{
-      const div = document.createElement("div");
-      div.className = "color";
-      div.style.background = col.c;
-      div.dataset.hex = col.c;
-      div.dataset.nombre = col.n;
-
-      div.addEventListener("click",()=>{
-        seleccion[grupoActivo] = {n:col.n, c:col.c};
-        aplicarColor(grupoActivo,col.c);
-        marcarSeleccionVisual();
-      });
-
-      paleta.appendChild(div);
-    });
-    marcarSeleccionVisual();
-  }
-
-  tabs.forEach(tab=>{
-    tab.addEventListener("click",()=>{
-      tabs.forEach(t=>t.classList.remove("activo"));
-      tab.classList.add("activo");
-      grupoActivo = tab.dataset.grupo;
-
-      // mostrar u ocultar el bloque del logo
-      if(grupoActivo==="logo"){
-        logoBlock.style.display="flex";
-      }else{
-        logoBlock.style.display="none";
-      }
-
+function crearPaleta(){
+  colores.forEach(col=>{
+    const d=document.createElement("div");
+    d.className="color";
+    d.style.background=col.c;
+    d.dataset.hex=col.c;
+    d.addEventListener("click",()=>{
+      seleccion[grupoActivo].c=col.c;
+      aplicarColor(grupoActivo,col.c);
       marcarSeleccionVisual();
     });
+    paleta.appendChild(d);
+  });
+  marcarSeleccionVisual();
+}
+
+tabs.forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    tabs.forEach(t=>t.classList.remove("activo"));
+    tab.classList.add("activo");
+    grupoActivo = tab.dataset.grupo;
+
+    if(grupoActivo==="logo") logoBlock.style.display="flex";
+    else logoBlock.style.display="none";
+
+    marcarSeleccionVisual();
+  });
+});
+
+/* =====================
+   LOGOS
+===================== */
+const listaLogos=[
+  {n:"Yamaha",f:"logoYamaha.stl"},
+  {n:"Sin logo",f:""},
+  {n:"Nmax",f:"logoNmax.stl"},
+  {n:"V-Strom",f:"logoVstrom.stl"},
+  {n:"Ktm",f:"logoKtm.stl"},
+  {n:"FOX",f:"logoFox.stl"},
+  {n:"Monster",f:"logoMonster.stl"},
+  {n:"Nike",f:"logoNike.stl"},
+  {n:"Honda",f:"logoHonda.stl"},
+  {n:"Suzuki",f:"logoSuzuki.stl"},
+  {n:"Pulsar",f:"logoPulsar.stl"},
+  {n:"AKT",f:"logoAKT.stl"},
+  {n:"Royal Enfield",f:"logoRoyal.stl"},
+  {n:"Dominar",f:"logoDominar.stl"},
+  {n:"Kawasaki",f:"logoKawasaki.stl"},
+  {n:"Discover",f:"logoDiscover.stl"}
+];
+
+function crearSelectLogo(){
+  listaLogos.forEach(l=>{
+    const opt=document.createElement("option");
+    opt.value=l.f;
+    opt.textContent=l.n;
+    logoSelect.appendChild(opt);
   });
 
-  /* ======== Logos ======== */
-  const listaLogos=[
-    {n:"Yamaha",f:"logoYamaha.stl"},
-    {n:"Sin logo",f:""},
-    {n:"Nmax",f:"logoNmax.stl"},
-    {n:"V-Strom",f:"logoVstrom.stl"},
-    {n:"Ktm",f:"logoKtm.stl"},
-    {n:"FOX",f:"logoFox.stl"},
-    {n:"Monster",f:"logoMonster.stl"},
-    {n:"Nike",f:"logoNike.stl"},
-    {n:"Honda",f:"logoHonda.stl"},
-    {n:"Suzuki",f:"logoSuzuki.stl"},
-    {n:"Pulsar",f:"logoPulsar.stl"},
-    {n:"AKT",f:"logoAKT.stl"},
-    {n:"Royal Enfield",f:"logoRoyal.stl"},
-    {n:"Dominar",f:"logoDominar.stl"},
-    {n:"Kawasaki",f:"logoKawasaki.stl"},
-    {n:"Discover",f:"logoDiscover.stl"}
-  ];
-
-  function crearSelectLogo(){
-    listaLogos.forEach(l=>{
-      const opt=document.createElement("option");
-      opt.value=l.f;
-      opt.textContent=l.n;
-      logoSelect.appendChild(opt);
-    });
-
-    logoSelect.addEventListener("change",()=>{
-      const archivo = logoSelect.value;
-      const colorLogo = seleccion.logo.c || "#ff8000";
-      cargarLogo(archivo,colorLogo);
-    });
-  }
-
-  /* ======== WhatsApp ======== */
-  function nombreColorDesdeHex(hex){
-    const encontrado = colores.find(c=>c.c.toLowerCase()===hex.toLowerCase());
-    return encontrado ? encontrado.n : hex;
-  }
-
-  document.getElementById("enviarWhatsApp").addEventListener("click",()=>{
-    const base = nombreColorDesdeHex(seleccion.base.c);
-    const sup  = nombreColorDesdeHex(seleccion.superior.c);
-    const ins  = nombreColorDesdeHex(seleccion.insert.c);
-    const colL = nombreColorDesdeHex(seleccion.logo.c);
-    const logo = logoSelect.selectedOptions[0]?.textContent || "Sin logo";
-
-    const mensaje =
-`Hola Kreoma3D! 👋
-Quiero mi soporte 3 en 1 personalizado con:
-• Base: ${base}
-• Superior: ${sup}
-• Insertos: ${ins}
-• Logo: ${logo} (${colL})`;
-
-    window.open(`https://wa.me/573332395481?text=${encodeURIComponent(mensaje)}`,"_blank");
+  logoSelect.addEventListener("change",()=>{
+    const archivo = logoSelect.value;
+    const col=seleccion.logo.c;
+    cargarLogo(archivo,col);
   });
+}
 
-  /* ======== Loop y resize ======== */
-  function animar(){
-    requestAnimationFrame(animar);
-    controls.update();
-    renderer.render(scene,camera);
-  }
-  animar();
+/* =====================
+   WHATSAPP
+===================== */
+document.getElementById("enviarWhatsApp").addEventListener("click",()=>{
+  const msg = "Hola! Quiero mi soporte personalizado.";
+  window.open(`https://wa.me/573332395481?text=${encodeURIComponent(msg)}`);
+});
 
-  window.addEventListener("resize",ajustarTamano);
+/* =====================
+   LOOP
+===================== */
+function anim(){
+  requestAnimationFrame(anim);
+  controls.update();
+  renderer.render(scene,camera);
+}
+anim();
 
-  /* ======== Inicialización ======== */
-  cargarSTL();
-  crearPaleta();
-  crearSelectLogo();
-  // por defecto el bloque logo oculto
-  logoBlock.style.display="none";
-  </script>
+window.addEventListener("resize", ajustarTamano);
+
+/* =====================
+   INICIO
+===================== */
+cargarSTL();
+crearPaleta();
+crearSelectLogo();
+
+</script>
 
 </body>
 </html>
