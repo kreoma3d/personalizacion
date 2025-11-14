@@ -409,18 +409,29 @@ function crearSelectLogo(){
   });
 }
 
-/* =====================
-   WHATSAPP
-===================== */
-document.getElementById("enviarWhatsApp").addEventListener("click",()=>{
-  const msg = `Hola Kreoma3D! 👋
+/* ======== WhatsApp ======== */
+  function nombreColorDesdeHex(hex){
+    const encontrado = colores.find(c=>c.c.toLowerCase()===hex.toLowerCase());
+    return encontrado ? encontrado.n : hex;
+  }
+
+  document.getElementById("enviarWhatsApp").addEventListener("click",()=>{
+    const base = nombreColorDesdeHex(seleccion.base.c);
+    const sup  = nombreColorDesdeHex(seleccion.superior.c);
+    const ins  = nombreColorDesdeHex(seleccion.insert.c);
+    const colL = nombreColorDesdeHex(seleccion.logo.c);
+    const logo = logoSelect.selectedOptions[0]?.textContent || "Sin logo";
+
+    const mensaje =
+`Hola Kreoma3D! 👋
 Quiero mi soporte 3 en 1 personalizado con:
 • Base: ${base}
 • Superior: ${sup}
 • Insertos: ${ins}
 • Logo: ${logo} (${colL})`;
-  window.open(`https://wa.me/573332395481?text=${encodeURIComponent(msg)}`);
-});
+
+    window.open(`https://wa.me/573332395481?text=${encodeURIComponent(mensaje)}`,"_blank");
+  });
 
 /* =====================
    LOOP
@@ -445,4 +456,5 @@ crearSelectLogo();
 
 </body>
 </html>
+
 
