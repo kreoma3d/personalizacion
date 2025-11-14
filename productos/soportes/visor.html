@@ -2,203 +2,254 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Visor Soporte de Casco 3D - Kreoma3D</title>
+  <title>Personalizador 3D • Kreoma3D</title>
+
   <style>
   :root{
-    --panel:#ffffffee; --txt:#111; --border:#e6e6e6;
-    --shadow:0 10px 25px rgba(0,0,0,.18);
+    --panel-bg: rgba(255,255,255,0.96);
+    --border:#dcdcdc;
+    --txt:#111;
+    --shadow:0 10px 28px rgba(0,0,0,.18);
   }
-  *{box-sizing:border-box;margin:0;padding:0}
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
   body{
-    height:100vh; overflow:hidden;
-    background:#ccc; color:var(--txt);
+    height:100vh;
+    overflow:hidden;
+    background:radial-gradient(circle at center, #e8e8e8 0%, #d4d4d4 100%);
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--txt);
   }
 
   .bg-logo{
     position:fixed; inset:0; z-index:0;
     background:url('logo_kreoma.png') center center no-repeat;
-    background-size:150vmin;
-    opacity:0;
+    background-size:130vmin;
+    opacity:.06;
+    filter:blur(1px);
     pointer-events:none;
   }
 
-.topbar{
-  position:fixed; top:0; left:0; right:0; height:56px; z-index:20;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 20px;
-  background:#fff; border-bottom:1px solid var(--border); box-shadow:var(--shadow);
-}
-.topbar img{height:34px;cursor:pointer;}
-.topbar h1{
-  font-size:16px; font-weight:600;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  margin:0 20px; flex:1; text-align:center;
-}
-.topbar nav a{
-  color:#111; text-decoration:none; margin-left:18px;
-  font-weight:500; transition:.3s;
-}
-.topbar nav a:hover{color:#f33;}
+  /* Barra arriba */
+  .topbar{
+    position:fixed; top:0; left:0; right:0; height:56px; z-index:30;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px;
+    background:#fff;
+    border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow);
+  }
+  .topbar img{height:34px;cursor:pointer;}
+  .topbar h1{
+    font-size:16px;font-weight:600;text-align:center;
+    flex:1;padding:0 10px;
+  }
+  .topbar nav a{
+    text-decoration:none;color:#111;margin-left:18px;font-weight:500;
+  }
+  .topbar nav a:hover{color:#f33;}
 
+  /* Canvas */
+  canvas{
+    position:fixed;
+    top:56px;
+    left:0;
+    width:100%;
+    height:calc(100vh - 56px);
+    filter:drop-shadow(0 20px 40px rgba(0,0,0,.35));
+    z-index:1;
+  }
 
-  #panel{
-    position:fixed; top:72px; left:16px; z-index:10;
-    background:var(--panel); border:1px solid var(--border);
-    padding:14px 16px; border-radius:14px; box-shadow:var(--shadow);
-    width:340px; max-width:90vw;
-    backdrop-filter:saturate(1.2) blur(6px);
-    overflow-y:auto; max-height:calc(100vh - 100px);
+  /* Bottom sheet */
+  #sheet{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    height:75vh;
+    background:var(--panel-bg);
+    border-radius:22px 22px 0 0;
+    border-top:1px solid var(--border);
+    box-shadow:0 -6px 30px rgba(0,0,0,.25);
+    z-index:50;
+    transform:translateY(65%);
+    transition:transform .32s cubic-bezier(.25,.46,.45,.94);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    backdrop-filter:blur(14px) saturate(1.4);
+  }
+
+  #drag{
+    width:100%;
+    padding:14px 0 8px;
+    display:flex;
+    justify-content:center;
+    cursor:grab;
+  }
+
+  #drag div{
+    width:46px;
+    height:6px;
+    border-radius:4px;
+    background:#bfbfbf;
+  }
+
+  #sheet-content{
+    flex:1;
+    overflow-y:auto;
+    padding:10px 20px 30px;
   }
 
   h3{
-    margin:8px 0 6px;
-    font-size:13px;
-    text-transform:uppercase;
+    margin:12px 0 8px;
+    font-size:14px;
+    font-weight:700;
     letter-spacing:.6px;
   }
 
   select, button{
-    width:100%; padding:10px 12px; margin-bottom:12px;
-    border-radius:10px; border:1px solid var(--border);
-    font-size:15px; background:#fff;
+    width:100%;
+    padding:14px 16px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    margin-bottom:14px;
+    font-size:16px;
+    background:#fff;
   }
 
   button{
-    background:#25D366; color:#fff; border:none;
-    font-weight:600; cursor:pointer; transition:background .2s;
+    background:#25D366;
+    font-weight:600;
+    color:#fff;
+    border:none;
+    cursor:pointer;
   }
-  button:hover{background:#1ebe5c;}
 
-  @media(max-width:768px){
-    .topbar{
-      height:auto; padding:10px; flex-wrap:wrap; text-align:center; justify-content:center;
+  @media(min-width:900px){
+    #sheet{
+      width:380px;
+      left:20px;
+      right:auto;
+      bottom:20px;
+      height:80vh;
+      transform:translateY(0);
+      border-radius:22px;
     }
-    .topbar img{height:28px;}
-    .topbar h1{font-size:14px;}
-    #panel{
-      position:fixed; top:auto; bottom:0; left:0; right:0;
-      width:100%; max-width:none; border-radius:20px 20px 0 0;
-      border-top:1px solid var(--border); box-shadow:0 -4px 20px rgba(0,0,0,.25);
-      padding:16px 20px; background:#ffffffee;
-    }
-    h3{font-size:12px; margin-top:6px;}
-    select, button{font-size:14px;}
   }
 
-  @media(max-width:480px){
-    #panel{padding:12px 16px;}
-    .topbar h1{font-size:13px;}
-  }
-</style>
-
+  </style>
 </head>
+
 <body>
-  <div class="bg-logo"></div>
+<div class="bg-logo"></div>
 
-  <div class="topbar">
-      <a href="../../index.html">
-    <img src="logo_kreoma.png" alt="Kreoma3D" style="height:50px;cursor:pointer;">
-  </a>
-
-  <h1>Personalizador 3D • Soporte de casco 3 en 1 </h1>
-
+<div class="topbar">
+  <a href="../../index.html"><img src="logo_kreoma.png"></a>
+  <h1>Personalizador 3D • Soporte 3 en 1</h1>
   <nav>
     <a href="../index.html">Inicio</a>
     <a href="../index.html#productos">Productos</a>
     <a href="../index.html#contacto">Contacto</a>
   </nav>
 </div>
- 
 
-  <div id="panel">
+<!-- Bottom Sheet -->
+<div id="sheet">
+  <div id="drag"><div></div></div>
+
+  <div id="sheet-content">
     <h3>Color Base</h3>
     <select id="color-base"></select>
+
     <h3>Color Superior</h3>
     <select id="color-superior"></select>
+
     <h3>Color Insertos</h3>
     <select id="color-insert"></select>
 
     <h3>Logo</h3>
     <select id="logo-select"></select>
+
     <h3>Color Logo</h3>
     <select id="color-logo"></select>
 
-    <button id="enviarWhatsApp" style="
-      width:100%;padding:10px 0;margin-top:10px;
-      background:#25D366;color:#fff;border:none;
-      border-radius:8px;font-weight:600;cursor:pointer;">
-      Enviar Personalización a WhatsApp
-    </button>
+    <button id="enviarWhatsApp">Enviar Personalización a WhatsApp</button>
   </div>
+</div>
 
-  <script type="module">
-    import * as THREE from './libs/three.module.js';
-    import { STLLoader } from './libs/STLLoader.js';
-    import { OrbitControls } from './libs/OrbitControls.js';
+<script type="module">
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 10000);
-    camera.position.set(-200,0,200);
+/* --------------------------
+   THREE JS ORIGINAL TUYO
+--------------------------- */
 
-    const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-    renderer.setClearColor(0x000000, 0);
-    renderer.setSize(innerWidth, innerHeight);
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    document.body.appendChild(renderer.domElement);
+import * as THREE from './libs/three.module.js';
+import { STLLoader } from './libs/STLLoader.js';
+import { OrbitControls } from './libs/OrbitControls.js';
 
-    const hemi = new THREE.HemisphereLight(0xffffff, 0x888888, 1.3);
-    scene.add(hemi);
-    const dir = new THREE.DirectionalLight(0xffffff, 0.9);
-    dir.position.set(1,1,1);
-    scene.add(dir);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 10000);
+camera.position.set(-200,0,200);
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.07;
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setClearColor(0x000000, 0);
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
 
-    const worldGroup = new THREE.Group();
-    worldGroup.position.y = -160;
-    worldGroup.position.x = 170;
-    scene.add(worldGroup);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x888888, 1.3);
+scene.add(hemi);
+const dir = new THREE.DirectionalLight(0xffffff, 0.9);
+dir.position.set(1,1,1);
+scene.add(dir);
+scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 
-    const loader = new STLLoader();
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
 
-    const piezas = {
-      base: { file:'Helm-Wandhalter.stl', mesh:null },
-      superior: { file:'Helm-Halter.stl', mesh:null },
-      inserts: ['Insert1.stl','Insert2.stl','Insert3.stl','Insert4.stl','Insert5.stl'],
-      insertMeshes:[],
-      logo: { file:'logoYamaha.stl', mesh:null }
-    };
+const worldGroup = new THREE.Group();
+worldGroup.position.y = -160;
+worldGroup.position.x = 170;
+scene.add(worldGroup);
 
-    function cargar(){
-      loader.load(piezas.base.file,g=>{
-        const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:'#000',metalness:0.4,roughness:0.35}));
-        m.rotation.x=Math.PI; m.rotation.z=Math.PI; worldGroup.add(m);
-        piezas.base.mesh=m;
-      });
+const loader = new STLLoader();
 
-      loader.load(piezas.superior.file,g=>{
-        const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:'#ff8000',metalness:0.4,roughness:0.35}));
-        m.rotation.x=Math.PI; m.rotation.z=Math.PI; worldGroup.add(m);
-        piezas.superior.mesh=m;
-      });
+const piezas = {
+  base: { file:'Helm-Wandhalter.stl', mesh:null },
+  superior: { file:'Helm-Halter.stl', mesh:null },
+  inserts: ['Insert1.stl','Insert2.stl','Insert3.stl','Insert4.stl','Insert5.stl'],
+  insertMeshes:[],
+  logo: { file:'logoYamaha.stl', mesh:null }
+};
 
-      piezas.inserts.forEach(f=>{
-        loader.load(f,g=>{
-          const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:'#ff8000',metalness:0.4,roughness:0.35}));
-          m.rotation.x=Math.PI; m.rotation.z=Math.PI; worldGroup.add(m);
-          piezas.insertMeshes.push(m);
-        });
-      });
+function cargar(){
+  loader.load(piezas.base.file,g=>{
+    const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:'#000',metalness:0.4,roughness:0.35}));
+    m.rotation.x=Math.PI; m.rotation.z=Math.PI; worldGroup.add(m);
+    piezas.base.mesh=m;
+  });
 
-      cargarLogo('logoYamaha.stl','#ff8000');
-    }
+  loader.load(piezas.superior.file,g=>{
+    const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:'#ff8000',metalness:0.4,roughness:0.35}));
+    m.rotation.x=Math.PI; m.rotation.z=Math.PI; worldGroup.add(m);
+    piezas.superior.mesh=m;
+  });
 
-    function cargarLogo(nombreArchivo,color){
-  // eliminar logo anterior si existe
+  piezas.inserts.forEach(f=>{
+    loader.load(f,g=>{
+      const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:'#ff8000',metalness:0.4,roughness:0.35}));
+      m.rotation.x=Math.PI; m.rotation.z=Math.PI; worldGroup.add(m);
+      piezas.insertMeshes.push(m);
+    });
+  });
+
+  cargarLogo('logoYamaha.stl','#ff8000');
+}
+
+function cargarLogo(nombreArchivo,color){
   if(piezas.logo.mesh){
     worldGroup.remove(piezas.logo.mesh);
     piezas.logo.mesh.geometry.dispose();
@@ -206,7 +257,6 @@
     piezas.logo.mesh=null;
   }
 
-  // si el valor está vacío, no carga nada
   if(!nombreArchivo) return;
 
   loader.load(nombreArchivo,g=>{
@@ -219,113 +269,178 @@
   });
 }
 
-    function cambiarLogo(){
-      const nombre=document.getElementById('logo-select').value;
-      const color=document.getElementById('color-logo').value;
-      cargarLogo(nombre,color);
-    }
+function cambiarLogo(){
+  const nombre=document.getElementById('logo-select').value;
+  const color=document.getElementById('color-logo').value;
+  cargarLogo(nombre,color);
+}
 
-    const colores=[
-      {n:'Amarillo',c:'#ffff00'},
-      {n:'Blanco',c:'#ffffff'},
-      {n:'Negro',c:'#000000'},
-      {n:'Azul',c:'#0000ff'},
-      {n:'Verde limón',c:'#ccff00'},
-      {n:'Rosado',c:'#ff66cc'},
-      {n:'Morado',c:'#8000ff'},
-      {n:'Café',c:'#8b4513'},
-      {n:'Rojo',c:'#ff0000'},
-      {n:'Gris',c:'#808080'},
-      {n:'Naranjado',c:'#ff8000'}
-    ];
+const colores=[
+  {n:'Amarillo',c:'#ffff00'},
+  {n:'Blanco',c:'#ffffff'},
+  {n:'Negro',c:'#000000'},
+  {n:'Azul',c:'#0000ff'},
+  {n:'Verde limón',c:'#ccff00'},
+  {n:'Rosado',c:'#ff66cc'},
+  {n:'Morado',c:'#8000ff'},
+  {n:'Café',c:'#8b4513'},
+  {n:'Rojo',c:'#ff0000'},
+  {n:'Gris',c:'#808080'},
+  {n:'Naranjado',c:'#ff8000'}
+];
 
-    function crearSelect(id,grupo,colorInicial){
-      const sel=document.getElementById(id);
-      colores.forEach(c=>{
-        const opt=document.createElement('option');
-        opt.value=c.c;
-        opt.textContent=c.n;
-        opt.style.background=c.c;
-        opt.style.color=(parseInt(c.c.slice(1),16)>0xffffff/2)?'#000':'#fff';
-        sel.appendChild(opt);
-      });
-      sel.value=colorInicial;
-      sel.addEventListener('change',()=>aplicarColor(grupo,sel.value));
-    }
+function crearSelect(id,grupo,colorInicial){
+  const sel=document.getElementById(id);
+  colores.forEach(c=>{
+    const opt=document.createElement('option');
+    opt.value=c.c;
+    opt.textContent=c.n;
+    sel.appendChild(opt);
+  });
+  sel.value=colorInicial;
+  sel.addEventListener('change',()=>aplicarColor(grupo,sel.value));
+}
 
-    function aplicarColor(grupo,col){
-      if(grupo==='base'&&piezas.base.mesh)piezas.base.mesh.material.color.set(col);
-      if(grupo==='superior'&&piezas.superior.mesh)piezas.superior.mesh.material.color.set(col);
-      if(grupo==='insert')piezas.insertMeshes.forEach(m=>m.material.color.set(col));
-      if(grupo==='logo'&&piezas.logo.mesh)piezas.logo.mesh.material.color.set(col);
-    }
+function aplicarColor(grupo,col){
+  if(grupo==='base'&&piezas.base.mesh)piezas.base.mesh.material.color.set(col);
+  if(grupo==='superior'&&piezas.superior.mesh)piezas.superior.mesh.material.color.set(col);
+  if(grupo==='insert')piezas.insertMeshes.forEach(m=>m.material.color.set(col));
+  if(grupo==='logo'&&piezas.logo.mesh)piezas.logo.mesh.material.color.set(col);
+}
 
-    const logos=[
-      {n:'Yamaha',f:'logoYamaha.stl'},
-      {n:'Sin logo',f:''},  // ← nueva opción vacía
-      {n:'Nmax',f:'logoNmax.stl'},
-      {n:'V-Strom',f:'logoVstrom.stl'},
-      {n:'Ktm',f:'logoKtm.stl'},
-      {n:'FOX',f:'logoFox.stl'},
-      {n:'Monster',f:'logoMonster.stl'},
-      {n:'Nike',f:'logoNike.stl'},
-      {n:'Honda',f:'logoHonda.stl'},
-      {n:'Suzuki',f:'logoSuzuki.stl'},
-      {n:'Pulsar',f:'logoPulsar.stl'},
-      {n:'AKT',f:'logoAKT.stl'},
-      {n:'Royal Enfield',f:'logoRoyal.stl'},
-      {n:'Dominar',f:'logoDominar.stl'},
-      {n:'Kawasaki',f:'logoKawasaki.stl'},
-      {n:'Discover',f:'logoDiscover.stl'}
-    ];
+const logos=[
+  {n:'Yamaha',f:'logoYamaha.stl'},
+  {n:'Sin logo',f:''},
+  {n:'Nmax',f:'logoNmax.stl'},
+  {n:'V-Strom',f:'logoVstrom.stl'},
+  {n:'Ktm',f:'logoKtm.stl'},
+  {n:'FOX',f:'logoFox.stl'},
+  {n:'Monster',f:'logoMonster.stl'},
+  {n:'Nike',f:'logoNike.stl'},
+  {n:'Honda',f:'logoHonda.stl'},
+  {n:'Suzuki',f:'logoSuzuki.stl'},
+  {n:'Pulsar',f:'logoPulsar.stl'},
+  {n:'AKT',f:'logoAKT.stl'},
+  {n:'Royal Enfield',f:'logoRoyal.stl'},
+  {n:'Dominar',f:'logoDominar.stl'},
+  {n:'Kawasaki',f:'logoKawasaki.stl'},
+  {n:'Discover',f:'logoDiscover.stl'}
+];
 
-    function crearSelectLogos(){
-      const sel=document.getElementById('logo-select');
-      logos.forEach(l=>{
-        const opt=document.createElement('option');
-        opt.value=l.f;
-        opt.textContent=l.n;
-        sel.appendChild(opt);
-      });
-      sel.addEventListener('change',cambiarLogo);
-    }
+function crearSelectLogos(){
+  const sel=document.getElementById('logo-select');
+  logos.forEach(l=>{
+    const opt=document.createElement('option');
+    opt.value=l.f;
+    opt.textContent=l.n;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change',cambiarLogo);
+}
 
-    cargar();
-    crearSelect('color-base','base','#000000');
-    crearSelect('color-superior','superior','#ff8000');
-    crearSelect('color-insert','insert','#ff8000');
-    crearSelect('color-logo','logo','#ff8000');
-    crearSelectLogos();
-    document.getElementById('color-logo').addEventListener('change',cambiarLogo);
+cargar();
+crearSelect('color-base','base','#000000');
+crearSelect('color-superior','superior','#ff8000');
+crearSelect('color-insert','insert','#ff8000');
+crearSelect('color-logo','logo','#ff8000');
+crearSelectLogos();
+document.getElementById('color-logo').addEventListener('change',cambiarLogo);
 
-    function animate(){
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene,camera);
-    }
-    animate();
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene,camera);
+}
+animate();
 
-    addEventListener('resize',()=>{
-      camera.aspect=innerWidth/innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth,innerHeight);
-    });
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
 
-    document.getElementById('enviarWhatsApp').addEventListener('click',()=>{
-      const base=document.getElementById('color-base').selectedOptions[0].textContent;
-      const sup=document.getElementById('color-superior').selectedOptions[0].textContent;
-      const ins=document.getElementById('color-insert').selectedOptions[0].textContent;
-      const logo=document.getElementById('logo-select').selectedOptions[0].textContent;
-      const colorLogo=document.getElementById('color-logo').selectedOptions[0].textContent;
-      const mensaje=`Hola Kreoma3D! 👋\nQuiero mi soporte 3 en 1 personalizado con:\n• Base: ${base}\n• Superior: ${sup}\n• Insertos: ${ins}\n• Logo: ${logo} (${colorLogo})`;
-      const url=`https://wa.me/573332395481?text=${encodeURIComponent(mensaje)}`;
-      window.open(url,'_blank');
-    });
-  </script>
+document.getElementById('enviarWhatsApp').addEventListener('click',()=>{
+  const base=document.getElementById('color-base').selectedOptions[0].textContent;
+  const sup=document.getElementById('color-superior').selectedOptions[0].textContent;
+  const ins=document.getElementById('color-insert').selectedOptions[0].textContent;
+  const logo=document.getElementById('logo-select').selectedOptions[0].textContent;
+  const colorLogo=document.getElementById('color-logo').selectedOptions[0].textContent;
+
+  const mensaje=`Hola Kreoma3D! 👋\nQuiero mi soporte 3 en 1 personalizado con:\n• Base: ${base}\n• Superior: ${sup}\n• Insertos: ${ins}\n• Logo: ${logo} (${colorLogo})`;
+
+  const url=`https://wa.me/573332395481?text=${encodeURIComponent(mensaje)}`;
+  window.open(url,'_blank');
+});
+
+/* -------------------------------------
+   BOTTOM SHEET — APPLE-STYLE SHEET
+-------------------------------------- */
+
+const sheet=document.getElementById("sheet");
+const drag=document.getElementById("drag");
+
+let startY=0;
+let currentY=0;
+let sheetHeight=0;
+let translate=65; // bottom position %
+let maxUp=5;      // top position %
+let mid=40;       // mid position %
+let dragging=false;
+
+function setSheet(y){
+  sheet.style.transform=`translateY(${y}%)`;
+}
+
+drag.addEventListener("touchstart",(e)=>{
+  dragging=true;
+  startY=e.touches[0].clientY;
+  sheetHeight=sheet.offsetHeight;
+});
+
+drag.addEventListener("touchmove",(e)=>{
+  if(!dragging) return;
+  currentY=e.touches[0].clientY;
+  let diff=(currentY-startY)/sheetHeight*100;
+  let newPos=translate+diff;
+  if(newPos<maxUp) newPos=maxUp;
+  if(newPos>65) newPos=65;
+  setSheet(newPos);
+});
+
+drag.addEventListener("touchend",()=>{
+  dragging=false;
+
+  if(translate<20) translate=maxUp; 
+  else if(translate<55) translate=mid;
+  else translate=65;
+
+  setSheet(translate);
+});
+
+// Gestos desde contenido
+const content=document.getElementById("sheet-content");
+
+content.addEventListener("touchstart",(e)=>{
+  startY=e.touches[0].clientY;
+});
+
+content.addEventListener("touchmove",(e)=>{
+  const y=e.touches[0].clientY;
+  const diff=y-startY;
+
+  if(content.scrollTop<=0 && diff>10){
+    sheet.style.transform=`translateY(${mid + diff/4}%)`;
+  }
+});
+
+content.addEventListener("touchend",()=>{
+  if(translate<20) translate=maxUp;
+  else if(translate<55) translate=mid;
+  else translate=65;
+
+  setSheet(translate);
+});
+
+</script>
 </body>
 </html>
-
-
-
-
-
